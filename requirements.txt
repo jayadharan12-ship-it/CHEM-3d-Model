@@ -1,7 +1,7 @@
 streamlit>=1.32
 pandas>=2.0
 matplotlib>=3.7
-rdkit
-py3Dmol
-stmol
-reportlab
+rdkit>=2024.3.1
+py3Dmol>=2.0.4
+stmol>=0.0.9
+reportlab>=4.0
