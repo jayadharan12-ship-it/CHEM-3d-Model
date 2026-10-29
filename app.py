@@ -164,10 +164,6 @@ div[data-testid="stAlert"] { border-radius:13px; }
 STUDENT_NAME = "R. JAYADHARAN"
 REGISTER_NUMBER = "RA2611026050288"
 INSTITUTION = "SRM Institute of Science and Technology, Tiruchirappalli"
-FACULTY_NAME = "Dr. C. Manivannan"
-FACULTY_DESIGNATION = "Assistant Professor"
-FACULTY_DEPARTMENT = "Division of Chemistry, School of Sciences"
-FACULTY_CONTACT = "cmanivannan89@gmail.com"
 
 
 # -------------------------------------------------------------------
