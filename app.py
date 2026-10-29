@@ -6,6 +6,9 @@ import urllib.request
 
 import pandas as pd
 import streamlit as st
+pip install py3Dmol
+pip install stmol
+
 
 # --------------------------------------------------
 # OPTIONAL LIBRARIES
