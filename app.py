@@ -5,15 +5,71 @@ import matplotlib.pyplot as plt
 from rdkit import Chem
 from rdkit.Chem import Descriptors, Draw, rdMolDescriptors
 from rdkit.Chem import AllChem
-from rdkit.Chem import rdchem
 from io import BytesIO
 from datetime import datetime
 from reportlab.lib.pagesizes import A4
 from reportlab.pdfgen import canvas
 
-# -----------------------------------------
+
+# ==================================================
+# HELPER FUNCTIONS
+# ==================================================
+
+def image_to_bytes(image):
+    output = BytesIO()
+    image.save(output, format="PNG")
+    return output.getvalue()
+
+
+def generate_student_pdf():
+    buffer = BytesIO()
+    pdf = canvas.Canvas(buffer, pagesize=A4)
+
+    width, height = A4
+    y = height - 70
+
+    pdf.setFont("Helvetica-Bold", 20)
+    pdf.drawString(50, y, "NEXCHEM VIRTUAL LAB")
+
+    y -= 50
+
+    pdf.setFont("Helvetica-Bold", 14)
+    pdf.drawString(50, y, "Student Information")
+
+    y -= 30
+
+    pdf.setFont("Helvetica", 11)
+
+    lines = [
+        "Name: R. JAYADHARAN",
+        "Register Number: RA2611026050288",
+        "Institution: SRM Institute of Science and Technology,",
+        "Tiruchirappalli",
+        "",
+        "Project: Cheminformatics Virtual Laboratory",
+        "",
+        "Project Features:",
+        "- Interactive Periodic Table",
+        "- Molecular Structure Visualization",
+        "- Molecular Property Calculator",
+        "- Chemistry Theory",
+        "- Chemistry Knowledge Quiz",
+        "",
+        "Generated: " + datetime.now().strftime("%d-%m-%Y %H:%M")
+    ]
+
+    for line in lines:
+        pdf.drawString(50, y, line)
+        y -= 22
+
+    pdf.save()
+    buffer.seek(0)
+    return buffer.getvalue()
+
+
+# ==================================================
 # PAGE CONFIGURATION
-# -----------------------------------------
+# ==================================================
 
 st.set_page_config(
     page_title="NEXCHEM | Virtual Laboratory",
@@ -22,17 +78,19 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# -----------------------------------------
+
+# ==================================================
 # STUDENT DETAILS
-# -----------------------------------------
+# ==================================================
 
 STUDENT_NAME = "R. JAYADHARAN"
 REGISTER_NUMBER = "RA2611026050288"
 INSTITUTION = "SRM Institute of Science and Technology, Tiruchirappalli"
 
-# -----------------------------------------
-# CUSTOM CSS AND ANIMATIONS
-# -----------------------------------------
+
+# ==================================================
+# CUSTOM DESIGN
+# ==================================================
 
 st.markdown("""
 <style>
@@ -124,14 +182,20 @@ div[data-testid="stMetric"]:hover {
     background: rgba(23, 48, 76, .85);
     border: 1px solid #42627c;
     border-radius: 12px;
-    padding: 12px;
+    padding: 20px;
     text-align: center;
-    margin: 4px;
+    margin: 10px 0;
 }
 
 @keyframes appear {
-    from {opacity: 0; transform: translateY(20px);}
-    to {opacity: 1; transform: translateY(0);}
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }
 
 @media (prefers-reduced-motion: reduce) {
@@ -143,26 +207,30 @@ div[data-testid="stMetric"]:hover {
 </style>
 """, unsafe_allow_html=True)
 
-# -----------------------------------------
-# HEADER
-# -----------------------------------------
 
-st.markdown(f"""
+# ==================================================
+# HEADER
+# ==================================================
+
+st.markdown("""
 <div class="hero">
     <h1>🧪 NEXCHEM VIRTUAL LAB</h1>
-    <p>Explore molecules. Discover properties. Experience chemistry.</p>
+    <p>Explore Molecules. Discover Properties. Experience Chemistry.</p>
     <p>Interactive Cheminformatics Learning Platform</p>
     <span class="hero-tag">STUDENT PROJECT | SRM IST</span>
 </div>
 """, unsafe_allow_html=True)
 
-# -----------------------------------------
-# SIDEBAR
-# -----------------------------------------
+
+# ==================================================
+# SIDEBAR NAVIGATION
+# ==================================================
 
 with st.sidebar:
+
     st.title("🧪 NEXCHEM")
     st.caption("CHEMISTRY VIRTUAL LAB")
+
     st.divider()
 
     page = st.radio(
@@ -185,9 +253,10 @@ with st.sidebar:
     st.caption(REGISTER_NUMBER)
     st.caption("SRM Institute of Science and Technology")
 
-# -----------------------------------------
+
+# ==================================================
 # DASHBOARD
-# -----------------------------------------
+# ==================================================
 
 if page == "🏠 Dashboard":
 
@@ -200,35 +269,34 @@ if page == "🏠 Dashboard":
 
     c1, c2, c3 = st.columns(3)
 
-    c1.metric("Elements", "118")
+    c1.metric("Chemical Elements", "118")
     c2.metric("Molecular Tools", "3")
     c3.metric("Learning Modules", "4")
 
     st.divider()
 
-    st.subheader("Explore the Laboratory")
+    st.subheader("Explore Your Laboratory")
 
-    cards = st.columns(3)
+    col1, col2, col3 = st.columns(3)
 
-    with cards[0]:
+    with col1:
         st.markdown("### ⚛️ Periodic Table")
-        st.write("Explore all 118 chemical elements.")
+        st.write("Explore chemical elements and their properties.")
 
-    with cards[1]:
+    with col2:
         st.markdown("### 🧬 Molecule Explorer")
-        st.write("Enter SMILES and visualize molecules.")
+        st.write("Generate and visualize molecular structures.")
 
-    with cards[2]:
-        st.markdown("### 📊 Molecular Properties")
-        st.write("Calculate important molecular descriptors.")
+    with col3:
+        st.markdown("### 📊 Property Calculator")
+        st.write("Calculate molecular descriptors.")
 
-    st.info(
-        "Start exploring using the navigation menu on the left."
-    )
+    st.info("Select a module from the navigation menu.")
 
-# -----------------------------------------
+
+# ==================================================
 # PERIODIC TABLE
-# -----------------------------------------
+# ==================================================
 
 elif page == "⚛️ Periodic Table":
 
@@ -238,7 +306,7 @@ elif page == "⚛️ Periodic Table":
 
     atomic_number = st.selectbox(
         "Select Atomic Number",
-        range(1, 119)
+        list(range(1, 119))
     )
 
     symbol = periodic_table.GetElementSymbol(atomic_number)
@@ -248,7 +316,7 @@ elif page == "⚛️ Periodic Table":
     st.markdown(
         f"""
         <div class="element-card">
-            <h1 style="font-size:65px;color:#54f0d0;">{symbol}</h1>
+            <h1 style="font-size:70px;color:#54f0d0;">{symbol}</h1>
             <h2>{name}</h2>
             <p>Atomic Number: {atomic_number}</p>
             <p>Atomic Mass: {atomic_mass:.3f} u</p>
@@ -257,20 +325,18 @@ elif page == "⚛️ Periodic Table":
         unsafe_allow_html=True
     )
 
-    st.subheader("Element Information")
-
     a, b, c = st.columns(3)
+
     a.metric("Atomic Number", atomic_number)
     b.metric("Symbol", symbol)
     c.metric("Atomic Mass", f"{atomic_mass:.3f} u")
 
-    st.caption(
-        "Element information is provided through RDKit's periodic table."
-    )
+    st.caption("Element information provided by RDKit.")
 
-# -----------------------------------------
+
+# ==================================================
 # MOLECULAR EXPLORER
-# -----------------------------------------
+# ==================================================
 
 elif page == "🧬 Molecular Explorer":
 
@@ -287,12 +353,12 @@ elif page == "🧬 Molecular Explorer":
     }
 
     selected = st.selectbox(
-        "Choose an example molecule",
+        "Choose Example Molecule",
         list(examples.keys())
     )
 
     smiles = st.text_input(
-        "Enter SMILES notation",
+        "Enter SMILES Notation",
         value=examples[selected]
     )
 
@@ -301,9 +367,11 @@ elif page == "🧬 Molecular Explorer":
         mol = Chem.MolFromSmiles(smiles)
 
         if mol is None:
-            st.error("Invalid SMILES notation. Please try again.")
+
+            st.error("Invalid SMILES notation. Try another structure.")
 
         else:
+
             st.success("Molecule generated successfully!")
 
             mol = Chem.AddHs(mol)
@@ -312,7 +380,7 @@ elif page == "🧬 Molecular Explorer":
 
             image = Draw.MolToImage(
                 mol,
-                size=(650, 450),
+                size=(700, 500),
                 legend="NEXCHEM Molecular Structure"
             )
 
@@ -325,134 +393,148 @@ elif page == "🧬 Molecular Explorer":
             st.subheader("Molecular Information")
 
             st.write("SMILES:", Chem.MolToSmiles(mol))
-            st.write("Atoms:", mol.GetNumAtoms())
-            st.write("Bonds:", mol.GetNumBonds())
+            st.write("Total Atoms:", mol.GetNumAtoms())
+            st.write("Total Bonds:", mol.GetNumBonds())
 
             st.download_button(
-                "Download Molecular Image",
-                data=BytesIO(
-                    image.save(BytesIO(), format="PNG")
-                ).getvalue() if False else _image_bytes(image),
+                "⬇️ Download Molecular Image",
+                data=image_to_bytes(image),
                 file_name="molecule.png",
                 mime="image/png"
             )
 
-# -----------------------------------------
-# IMAGE HELPER
-# -----------------------------------------
 
-def _image_bytes(image):
-    output = BytesIO()
-    image.save(output, format="PNG")
-    return output.getvalue()
-
-# -----------------------------------------
+# ==================================================
 # MOLECULAR PROPERTIES
-# -----------------------------------------
+# ==================================================
 
 elif page == "📊 Molecular Properties":
 
     st.title("📊 Molecular Property Calculator")
 
     smiles = st.text_input(
-        "Enter a molecule's SMILES",
-        "CCO"
+        "Enter SMILES Notation",
+        value="CCO"
     )
 
-    if st.button("Calculate Properties"):
+    if st.button("Calculate Molecular Properties"):
 
         mol = Chem.MolFromSmiles(smiles)
 
         if mol is None:
+
             st.error("Invalid molecular structure.")
 
         else:
+
             data = {
+                "Molecular Formula": rdMolDescriptors.CalcMolFormula(mol),
                 "Molecular Weight": Descriptors.MolWt(mol),
                 "LogP": Descriptors.MolLogP(mol),
                 "TPSA": Descriptors.TPSA(mol),
                 "H-Bond Donors": Descriptors.NumHDonors(mol),
                 "H-Bond Acceptors": Descriptors.NumHAcceptors(mol),
                 "Rotatable Bonds": Descriptors.NumRotatableBonds(mol),
-                "Heavy Atoms": Descriptors.HeavyAtomCount(mol),
-                "Molecular Formula": rdMolDescriptors.CalcMolFormula(mol)
+                "Heavy Atoms": Descriptors.HeavyAtomCount(mol)
             }
 
-            st.subheader("Calculated Properties")
+            st.success("Properties calculated successfully!")
 
-            c1, c2 = st.columns(2)
+            col1, col2 = st.columns(2)
 
-            c1.metric(
+            col1.metric(
                 "Molecular Weight",
                 f"{data['Molecular Weight']:.2f} g/mol"
             )
 
-            c2.metric(
+            col2.metric(
                 "LogP",
                 f"{data['LogP']:.2f}"
             )
 
+            st.subheader("Complete Property Table")
+
+            df = pd.DataFrame(
+                list(data.items()),
+                columns=["Property", "Value"]
+            )
+
             st.dataframe(
-                pd.DataFrame(
-                    list(data.items()),
-                    columns=["Property", "Value"]
-                ),
-                use_container_width=True
+                df,
+                use_container_width=True,
+                hide_index=True
             )
 
             numeric_data = {
-                key: value for key, value in data.items()
+                key: value
+                for key, value in data.items()
                 if isinstance(value, (int, float))
             }
 
             fig, ax = plt.subplots(figsize=(9, 4))
+
             ax.bar(
                 numeric_data.keys(),
                 numeric_data.values()
             )
+
             ax.set_title("Molecular Descriptor Overview")
+            ax.set_ylabel("Calculated Value")
             ax.tick_params(axis="x", rotation=35)
+
             fig.tight_layout()
 
             st.pyplot(fig)
             plt.close(fig)
 
-# -----------------------------------------
+            csv = df.to_csv(index=False).encode("utf-8")
+
+            st.download_button(
+                "⬇️ Download Properties CSV",
+                data=csv,
+                file_name="molecular_properties.csv",
+                mime="text/csv"
+            )
+
+
+# ==================================================
 # CHEMISTRY THEORY
-# -----------------------------------------
+# ==================================================
 
 elif page == "🔬 Chemistry Theory":
 
     st.title("🔬 Chemistry Learning Centre")
 
     topics = {
-        "Quantum Mechanics": """
-        Quantum mechanics describes the behaviour of matter at atomic
-        and subatomic scales.
 
-        Important concepts:
+        "Quantum Mechanics": """
+        Quantum mechanics describes the behaviour of matter
+        at atomic and subatomic scales.
+
+        Important Concepts:
         - Wave-particle duality
         - Quantization of energy
         - Probability interpretation
         - Schrödinger wave equation
         """,
 
-        "Schrödinger Equation": r"""
+        "Schrödinger Equation": """
         The time-independent Schrödinger equation is:
 
         Hψ = Eψ
 
         Where:
-        - H = Hamiltonian operator
-        - ψ = Wave function
-        - E = Energy eigenvalue
+
+        H = Hamiltonian operator
+        ψ = Wave function
+        E = Energy eigenvalue
         """,
 
-        "Molecular Orbitals": """
-        Molecular orbital theory explains chemical bonding by combining
-        atomic orbitals to form molecular orbitals.
+        "Molecular Orbital Theory": """
+        Molecular orbital theory explains chemical bonding
+        by combining atomic orbitals to form molecular orbitals.
 
-        Main types:
+        Main Types:
         - Bonding orbitals
         - Antibonding orbitals
         """,
@@ -460,7 +542,7 @@ elif page == "🔬 Chemistry Theory":
         "Chemical Bonding": """
         Chemical bonding explains how atoms combine to form molecules.
 
-        Main types:
+        Main Types:
         - Ionic bonding
         - Covalent bonding
         - Metallic bonding
@@ -470,7 +552,7 @@ elif page == "🔬 Chemistry Theory":
         "Thermodynamics": """
         Thermodynamics studies energy, heat and work.
 
-        Important quantities:
+        Important Quantities:
         - Internal energy
         - Enthalpy
         - Entropy
@@ -479,16 +561,17 @@ elif page == "🔬 Chemistry Theory":
     }
 
     topic = st.selectbox(
-        "Choose a topic",
+        "Select a Chemistry Topic",
         list(topics.keys())
     )
 
-    st.markdown("### " + topic)
+    st.subheader(topic)
     st.write(topics[topic])
 
-# -----------------------------------------
-# QUIZ
-# -----------------------------------------
+
+# ==================================================
+# CHEMISTRY QUIZ
+# ==================================================
 
 elif page == "📝 Quiz":
 
@@ -506,7 +589,7 @@ elif page == "📝 Quiz":
             "answer": "H2O"
         },
         {
-            "question": "Which scientist developed the wave equation?",
+            "question": "Who developed the wave equation?",
             "options": [
                 "Newton",
                 "Schrödinger",
@@ -537,15 +620,19 @@ elif page == "📝 Quiz":
         answers = []
 
         for i, q in enumerate(questions):
-            st.markdown(f"**Q{i+1}. {q['question']}**")
+
+            st.markdown(
+                f"**Q{i + 1}. {q['question']}**"
+            )
 
             answer = st.radio(
-                "Choose your answer",
+                "Select your answer",
                 q["options"],
-                key=f"question_{i}"
+                key=f"quiz_{i}"
             )
 
             answers.append(answer)
+
             st.divider()
 
         submitted = st.form_submit_button("Submit Quiz")
@@ -558,22 +645,26 @@ elif page == "📝 Quiz":
         )
 
         st.success(
-            f"Your score: {score}/{len(questions)}"
+            f"Your Score: {score}/{len(questions)}"
         )
 
         st.progress(score / len(questions))
 
         for i, q in enumerate(questions):
+
             if answers[i] == q["answer"]:
-                st.write(f"Q{i+1}: Correct")
+                st.write(f"Question {i + 1}: Correct!")
+
             else:
                 st.write(
-                    f"Q{i+1}: Correct answer: {q['answer']}"
+                    f"Question {i + 1}: Correct answer is "
+                    f"{q['answer']}"
                 )
 
-# -----------------------------------------
+
+# ==================================================
 # STUDENT REPORT
-# -----------------------------------------
+# ==================================================
 
 elif page == "📄 Student Report":
 
@@ -595,79 +686,46 @@ elif page == "📄 Student Report":
     This project provides an interactive chemistry learning
     environment using Python, Streamlit and RDKit.
 
-    Features include:
+    Main Features:
+
     - Interactive periodic table
     - Molecular structure visualization
-    - Molecular property calculation
+    - Molecular property calculations
     - Chemistry theory modules
     - Knowledge assessment quiz
+    - Student PDF report
     """)
 
     if st.button("Generate Student PDF Report"):
 
-        buffer = BytesIO()
-
-        pdf = canvas.Canvas(buffer, pagesize=A4)
-        width, height = A4
-
-        y = height - 70
-
-        pdf.setFont("Helvetica-Bold", 20)
-        pdf.drawString(50, y, "CHEMINFORMATICS VIRTUAL LAB")
-
-        y -= 55
-
-        pdf.setFont("Helvetica-Bold", 14)
-        pdf.drawString(50, y, "Student Details")
-
-        y -= 30
-
-        pdf.setFont("Helvetica", 11)
-
-        lines = [
-            f"Name: {STUDENT_NAME}",
-            f"Register Number: {REGISTER_NUMBER}",
-            f"Institution: {INSTITUTION}",
-            "",
-            "Project: Cheminformatics Virtual Laboratory",
-            "",
-            "Project Features:",
-            "- Periodic Table",
-            "- Molecular Structure Visualization",
-            "- Molecular Property Calculator",
-            "- Chemistry Theory",
-            "- Chemistry Quiz",
-            "",
-            f"Generated: {datetime.now().strftime('%d-%m-%Y %H:%M')}"
-        ]
-
-        for line in lines:
-            pdf.drawString(50, y, line)
-            y -= 22
-
-        pdf.save()
-        buffer.seek(0)
+        pdf_data = generate_student_pdf()
 
         st.download_button(
-            "Download PDF Report",
-            data=buffer,
+            "⬇️ Download Student Report",
+            data=pdf_data,
             file_name="NEXCHEM_Student_Report.pdf",
             mime="application/pdf"
         )
 
-# -----------------------------------------
+
+# ==================================================
 # FOOTER
-# -----------------------------------------
+# ==================================================
 
 st.divider()
 
 st.markdown(
     f"""
-    <div style="text-align:center;padding:15px;color:#9fb2cc;">
-        <b style="color:#54f0d0;">NEXCHEM VIRTUAL LAB</b><br>
-        {STUDENT_NAME} | {REGISTER_NUMBER}<br>
+    <div style="
+        text-align:center;
+        padding:20px;
+        color:#9fb2cc;
+    ">
+        <h3 style="color:#54f0d0;">NEXCHEM VIRTUAL LAB</h3>
+        {STUDENT_NAME}<br>
+        {REGISTER_NUMBER}<br>
         {INSTITUTION}<br>
-        <small>Built with Python, Streamlit and RDKit</small>
+        <small>Built using Python, Streamlit and RDKit</small>
     </div>
     """,
     unsafe_allow_html=True
