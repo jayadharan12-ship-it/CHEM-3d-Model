@@ -75,6 +75,7 @@ except Exception as e:
 
 st.markdown("""
 <style>
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&family=Space+Grotesk:wght@500;700&display=swap');
 
 .stApp {
@@ -82,60 +83,111 @@ st.markdown("""
         radial-gradient(circle at 10% 10%, #173d52, transparent 35%),
         radial-gradient(circle at 90% 15%, #29285b, transparent 35%),
         linear-gradient(135deg, #07111f, #10152c);
-    color: #eaf3ff;
+    color: #F1F5F9;
 }
 
 html, body, [class*="css"] {
     font-family: 'Inter', sans-serif;
+    color: #F1F5F9;
 }
 
-.block-container {
-    max-width: 1450px;
-    padding-top: 2rem;
+/* Main text */
+.stMarkdown p,
+.stMarkdown li,
+.stMarkdown span,
+.stMarkdown label {
+    color: #EAF3FF;
 }
 
-section[data-testid="stSidebar"] {
-    background: #0b192b;
+/* Headings */
+h1, h2, h3, h4, h5, h6 {
+    color: #FFFFFF !important;
 }
 
-.hero {
-    padding: 35px;
-    border-radius: 24px;
-    margin-bottom: 25px;
-    background: linear-gradient(110deg, #10475a, #263b78, #47356f);
-    border: 1px solid #54f0d0;
-    box-shadow: 0 15px 45px #00000055;
+/* Labels */
+.stTextInput label,
+.stSelectbox label,
+.stRadio label,
+.stCheckbox label,
+.stNumberInput label {
+    color: #FFFFFF !important;
 }
 
-.hero h1 {
-    color: #ffffff;
-    font-family: 'Space Grotesk', sans-serif;
-    font-size: 42px;
+/* Input boxes */
+.stTextInput input,
+.stNumberInput input,
+.stTextArea textarea {
+    background-color: #142943 !important;
+    color: #FFFFFF !important;
+    border: 1px solid #54F0D0 !important;
 }
 
-.hero p {
-    color: #d9f8ff;
-    font-size: 16px;
+/* Select boxes */
+.stSelectbox div[data-baseweb="select"] {
+    background-color: #142943;
+    color: #FFFFFF;
 }
 
+.stSelectbox div[data-baseweb="select"] * {
+    color: #FFFFFF;
+}
+
+/* Dataframes */
+div[data-testid="stDataFrame"] {
+    color: #FFFFFF;
+}
+
+/* Metrics */
 div[data-testid="stMetric"] {
     background: #142943;
-    border: 1px solid #31536b;
+    border: 1px solid #31536B;
     border-radius: 15px;
     padding: 15px;
 }
 
+div[data-testid="stMetric"] label,
+div[data-testid="stMetric"] [data-testid="stMetricValue"] {
+    color: #FFFFFF !important;
+}
+
+/* Sidebar */
+section[data-testid="stSidebar"] {
+    background: #0B192B;
+}
+
+section[data-testid="stSidebar"] * {
+    color: #EAF3FF;
+}
+
+/* Buttons */
 .stButton button {
-    background: linear-gradient(100deg, #54f0d0, #72c8ff);
-    color: #07111f;
+    background: linear-gradient(100deg, #54F0D0, #72C8FF);
+    color: #07111F !important;
     font-weight: bold;
     border-radius: 10px;
     border: none;
 }
 
-div[data-testid="stDataFrame"] {
-    border: 1px solid #31536b;
-    border-radius: 12px;
+/* Hero */
+.hero h1 {
+    color: #FFFFFF !important;
+    font-family: 'Space Grotesk', sans-serif;
+    font-size: 42px;
+}
+
+.hero p {
+    color: #D9F8FF !important;
+    font-size: 16px;
+}
+
+/* Links */
+a {
+    color: #54F0D0 !important;
+}
+
+/* Alerts */
+.stAlert p {
+    color: #FFFFFF !important;
 }
 
 </style>
