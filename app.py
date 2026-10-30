@@ -3,6 +3,7 @@ import io
 import json
 import urllib.parse
 import urllib.request
+from pathlib import Path
 
 import pandas as pd
 import streamlit as st
@@ -10,6 +11,14 @@ import streamlit as st
 # =========================================================
 # PAGE CONFIGURATION
 # =========================================================
+
+# SRM Institute Photo
+srm_photo = Path(__file__).parent / "assets" / "srm.jpeg"
+
+if srm_photo.is_file():
+    left, center, right = st.columns([1, 2, 1])
+    with center:
+        st.image(str(srm_photo), width=180)
 
 st.set_page_config(
     page_title="NEXCHEM Virtual Lab",
